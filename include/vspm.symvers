@@ -1,0 +1,5 @@
+0x00000000	vspm_get_status	/media/slash/450G/work/RZ-V2L/build/tmp/work/smarc_rzv2l-poky-linux/kernel-module-vspm/1.0-r0/git/vspm-module/files/vspm/drv/vspm	EXPORT_SYMBOL	
+0x00000000	vspm_quit_driver	/media/slash/450G/work/RZ-V2L/build/tmp/work/smarc_rzv2l-poky-linux/kernel-module-vspm/1.0-r0/git/vspm-module/files/vspm/drv/vspm	EXPORT_SYMBOL	
+0x00000000	vspm_cancel_job	/media/slash/450G/work/RZ-V2L/build/tmp/work/smarc_rzv2l-poky-linux/kernel-module-vspm/1.0-r0/git/vspm-module/files/vspm/drv/vspm	EXPORT_SYMBOL	
+0x00000000	vspm_entry_job	/media/slash/450G/work/RZ-V2L/build/tmp/work/smarc_rzv2l-poky-linux/kernel-module-vspm/1.0-r0/git/vspm-module/files/vspm/drv/vspm	EXPORT_SYMBOL	
+0x00000000	vspm_init_driver	/media/slash/450G/work/RZ-V2L/build/tmp/work/smarc_rzv2l-poky-linux/kernel-module-vspm/1.0-r0/git/vspm-module/files/vspm/drv/vspm	EXPORT_SYMBOL	
