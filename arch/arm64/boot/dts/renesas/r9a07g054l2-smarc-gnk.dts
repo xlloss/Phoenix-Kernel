@@ -1,0 +1,74 @@
+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+/*
+ * Device Tree Source for the RZ/G2L SMARC GNK board
+ *
+ * Copyright (C) 2022 Renesas Electronics Corp.
+ *
+ * slash.linux.c@gmail.com
+ */
+
+/dts-v1/;
+#include "r9a07g054l2.dtsi"
+#include "rzg2l-smarc-som.dtsi"
+#include "rzg2l-smarc-pinfunction.dtsi"
+#include "rz-gnk-smarc-common.dtsi"
+
+/ {
+	model = "Renesas Rnk Board based on r9a07g054l2";
+	compatible = "renesas,smarc-gnk", "renesas,r9a07g054l2", "renesas,r9a07g054";
+
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		/* device specific region for contiguous allocations */
+		drp_reserved: DRP-AI {
+			reusable;
+			reg = <0x0 0x80000000 0x0 0x20000000>;
+		};
+
+		image_buf0: image_buf@0 {
+			compatible = "shared-dma-pool";
+			reusable;
+			reg = <0x0 0xB0000000 0x0 0x04000000>;
+			label = "image_buf0";
+		};
+
+		isp_work0: SIMPLE_ISP {
+			reusable;
+			reg = <0x0 0xB4000000 0x0 0x03000000>;
+		};
+	};
+};
+
+&pinctrl {
+	/delete-node/ can0-stb;
+	/delete-node/ can1-stb;
+	scif1_pins: scif1 {
+		pinmux = <RZG2L_PORT_PINMUX(40, 0, 1)>,	/* TxD */
+			 <RZG2L_PORT_PINMUX(40, 1, 1)>;	/* RxD */
+	};
+
+	pmod0-gpio {
+		gpio-hog;
+		pinmux = <RZG2L_GPIO(43, 0) GPIO_ACTIVE_HIGH>,
+			<RZG2L_GPIO(43, 2) GPIO_ACTIVE_HIGH>,
+			<RZG2L_GPIO(41, 0) GPIO_ACTIVE_HIGH>,
+			<RZG2L_GPIO(43, 1) GPIO_ACTIVE_HIGH>;
+		output-low;
+	};
+};
+
+/* PMOD 0 */
+&spi1 {
+	spidev0: spi@0 {
+		compatible = "spidev";
+		reg = <0>;
+		spi-max-frequency = <25000000>;
+	};
+};
+
+&gpt4 {
+	status = "disabled";
+};

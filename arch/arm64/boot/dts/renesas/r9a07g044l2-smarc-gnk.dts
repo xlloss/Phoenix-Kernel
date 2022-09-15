@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+/*
+ * Device Tree Source for the RZ/G2L SMARC PHOENIX board
+ *
+ * Copyright (C) 2022 Regulus Corp.
+ */
+
+/dts-v1/;
+#include "r9a07g044l2.dtsi"
+#include "rzg2l-smarc-som.dtsi"
+#include "rzg2l-smarc-pinfunction.dtsi"
+#include "rz-gnk-smarc-common.dtsi"
+
+/ {
+	model = "Renesas Gnk Board based on r9a07g044l2";
+	compatible = "renesas,smarc-gnk", "renesas,r9a07g044l2", "renesas,r9a07g044";
+};
