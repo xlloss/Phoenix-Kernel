@@ -12,4 +12,152 @@
 	aliases {
 		serial1 = &scif2;
 	};
+
+
+	x1_clk: x1-clock {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <24000000>;
+	};
+
+	vdd_1v8: vdd_1v8 {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd_1v8";
+
+		/* Always on when ppvar_sys shows power good */
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		//vin-supply = <&ppvar_sys>;
+	};
+
+	vdd_3v3: vdd_3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd_3v3";
+
+		/* Always on; plain and simple */
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+
+		//vin-supply = <&ppvar_sys>;
+	};
+
+	snd_rzg2l: sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,bitclock-master = <&cpu_dai>;
+		simple-audio-card,frame-master = <&cpu_dai>;
+		simple-audio-card,mclk-fs = <256>;
+
+		simple-audio-card,widgets = "Microphone", "Microphone Jack";
+		simple-audio-card,routing =
+			    "L2", "Mic Bias",
+			    "R2", "Mic Bias",
+			    "Mic Bias", "Microphone Jack";
+
+		cpu_dai: simple-audio-card,cpu {
+			sound-dai = <&ssi0>;
+		};
+
+		codec_dai: simple-audio-card,codec {
+			sound-dai = <&codec_da7218>;
+			clocks = <&versa3 3>;
+		};
+	};
+
+};
+
+&pinctrl {
+	sound_clk_pins: sound_clk {
+		pins = "AUDIO_CLK1", "AUDIO_CLK2";
+		input-enable;
+	};
+
+	ssi0_pins: ssi0 {
+		pinmux = <RZG2L_PORT_PINMUX(45, 0, 1)>, /* BCK */
+			<RZG2L_PORT_PINMUX(45, 1, 1)>, /* RCK */
+			<RZG2L_PORT_PINMUX(45, 2, 1)>, /* TXD */
+			<RZG2L_PORT_PINMUX(45, 3, 1)>; /* RXD */
+	};
+};
+
+&ssi0 {
+	pinctrl-0 = <&ssi0_pins &sound_clk_pins>;
+	pinctrl-names = "default";
+
+	status = "okay";
+};
+
+&i2c3 {
+	pinctrl-0 = <&i2c3_pins>;
+	pinctrl-names = "default";
+
+	status = "okay";
+	clock-frequency = <400000>;
+
+	versa3: versa3@68 {
+		compatible = "renesas,5p35023";
+		reg = <0x68>;
+		#clock-cells = <1>;
+		clocks = <&x1_clk>;
+		clock-names = "x1";
+		assigned-clocks = <&versa3 0>,
+				<&versa3 1>,
+				<&versa3 2>,
+				<&versa3 3>,
+				<&versa3 4>,
+				<&versa3 5>;
+		assigned-clock-rates =	<12288000>, <25000000>,
+					<12000000>, <11289600>,
+					<11289600>, <24000000>;
+		clock-divider-read-only = <1>, <1>, <1>, <1>, <1>;
+		clock-flags = <2176>, <2176>, <2176>, <2052>, <2176>, <2048>;
+	};
+
+	codec_da7218: codec_da7218@1a {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		#sound-dai-cells = <0>;
+		compatible = "dlg,da7218";
+		reg = <0x1a>;
+
+		interrupt-parent = <&pinctrl>;
+		interrupts = <RZG2L_GPIO(47, 3) IRQ_TYPE_LEVEL_LOW>;
+		wakeup-source;
+
+		VDD-supply = <&vdd_1v8>;
+		VDDMIC-supply = <&vdd_3v3>;
+		VDDIO-supply = <&vdd_3v3>;
+
+		clocks = <&versa3 3>;
+		clock-names = "mclk";
+
+		dlg,micbias1-lvl-millivolt = <2600>;
+
+		/* disable */
+		/* dlg,micbias2-lvl-millivolt = <2600>; */
+		dlg,mic1-amp-in-sel = "diff";
+
+		/* disable */
+		/* dlg,mic2-amp-in-sel = "diff"; */
+
+		dlg,dmic1-data-sel = "lrise_rfall";
+		dlg,dmic1-samplephase = "on_clkedge";
+		dlg,dmic1-clkrate-hz = <3000000>;
+
+		/* disable */
+		/* dlg,dmic2-data-sel = "lrise_rfall"; */
+		/* dlg,dmic2-samplephase = "on_clkedge"; */
+		/* dlg,dmic2-clkrate-hz = <3000000>; */
+
+		da7218_hpldet {
+			dlg,jack-rate-us = <40>;
+			dlg,jack-debounce = <2>;
+			dlg,jack-threshold-pct = <84>;
+			dlg,hyst;
+		};
+	};
 };
