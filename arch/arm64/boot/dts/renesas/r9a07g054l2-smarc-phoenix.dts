@@ -10,7 +10,6 @@
 #include "rzg2l-smarc-som.dtsi"
 #include "rzg2l-smarc-pinfunction.dtsi"
 #include "rz-smarc-common.dtsi"
-//#include "rzg2l-smarc.dtsi"
 #include "rzg2l-smarc-phoenix.dtsi"
 
 / {

@@ -2878,12 +2878,12 @@ static int da7218_probe(struct snd_soc_component *component)
 {
 	struct da7218_priv *da7218 = snd_soc_component_get_drvdata(component);
 	int ret;
-
+	dev_err(component->dev, "+++%s %d+++\n", __func__, __LINE__);
 	/* Regulator configuration */
 	ret = da7218_handle_supplies(component);
 	if (ret)
 		return ret;
-
+	dev_err(component->dev, "%s %d\n", __func__, __LINE__);
 	/* Handle DT/Platform data */
 	if (component->dev->of_node)
 		da7218->pdata = da7218_of_to_pdata(component);
@@ -2891,7 +2891,7 @@ static int da7218_probe(struct snd_soc_component *component)
 		da7218->pdata = dev_get_platdata(component->dev);
 
 	da7218_handle_pdata(component);
-
+	dev_err(component->dev, "%s %d\n", __func__, __LINE__);
 	/* Check if MCLK provided, if not the clock is NULL */
 	da7218->mclk = devm_clk_get(component->dev, "mclk");
 	if (IS_ERR(da7218->mclk)) {
@@ -2902,7 +2902,7 @@ static int da7218_probe(struct snd_soc_component *component)
 			da7218->mclk = NULL;
 		}
 	}
-
+	dev_err(component->dev, "%s %d\n", __func__, __LINE__);
 	/* Default PC to free-running */
 	snd_soc_component_write(component, DA7218_PC_COUNT, DA7218_PC_FREERUN_MASK);
 
@@ -2977,7 +2977,7 @@ static int da7218_probe(struct snd_soc_component *component)
 		}
 
 	}
-
+	dev_err(component->dev, "---%s %d---\n", __func__, __LINE__);
 	return 0;
 
 err_disable_reg:
@@ -3282,6 +3282,7 @@ static int da7218_i2c_probe(struct i2c_client *i2c,
 	}
 
 	da7218->irq = i2c->irq;
+	dev_err(&i2c->dev, "da7218->irq: %d\n", da7218->irq);
 
 	da7218->regmap = devm_regmap_init_i2c(i2c, &da7218_regmap_config);
 	if (IS_ERR(da7218->regmap)) {

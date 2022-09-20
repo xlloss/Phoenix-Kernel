@@ -219,14 +219,18 @@ void asoc_simple_shutdown(struct snd_pcm_substream *substream)
 	struct simple_dai_props *dai_props =
 		simple_priv_to_props(priv, rtd->num);
 
-	if (dai_props->mclk_fs) {
-		snd_soc_dai_set_sysclk(codec_dai, 0, 0, SND_SOC_CLOCK_IN);
-		snd_soc_dai_set_sysclk(cpu_dai, 0, 0, SND_SOC_CLOCK_OUT);
-	}
+	pr_info("+++SLASH %s %d\n", __func__, __LINE__);
+
+	//if (dai_props->mclk_fs) {
+	//	snd_soc_dai_set_sysclk(codec_dai, 0, 0, SND_SOC_CLOCK_IN);
+	//	snd_soc_dai_set_sysclk(cpu_dai, 0, 0, SND_SOC_CLOCK_OUT);
+	//}
 
 	asoc_simple_clk_disable(dai_props->cpu_dai);
 
 	asoc_simple_clk_disable(dai_props->codec_dai);
+	pr_info("---SLASH %s %d\n", __func__, __LINE__);
+
 }
 EXPORT_SYMBOL_GPL(asoc_simple_shutdown);
 
@@ -256,13 +260,15 @@ int asoc_simple_hw_params(struct snd_pcm_substream *substream,
 		simple_priv_to_props(priv, rtd->num);
 	unsigned int mclk, mclk_fs = 0;
 	int ret = 0;
-
+	pr_info("SLASH %s %d\n", __func__, __LINE__);
 	if (dai_props->mclk_fs)
 		mclk_fs = dai_props->mclk_fs;
 
 	if (mclk_fs) {
+		pr_info("SLASH %s %d mclk_fs %d\n", __func__, __LINE__, mclk_fs);
 		mclk = params_rate(params) * mclk_fs;
 
+		pr_info("SLASH %s %d mclk %d\n", __func__, __LINE__, mclk);
 		ret = asoc_simple_set_clk_rate(dai_props->codec_dai, mclk);
 		if (ret < 0)
 			return ret;
@@ -271,13 +277,18 @@ int asoc_simple_hw_params(struct snd_pcm_substream *substream,
 		if (ret < 0)
 			return ret;
 
+		pr_info("SLASH %s %d\n", __func__, __LINE__);
 		ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
 					     SND_SOC_CLOCK_IN);
+		pr_info("SLASH %s %d\n", __func__, __LINE__);
 		if (ret && ret != -ENOTSUPP)
 			goto err;
 
+		pr_info("SLASH %s %d\n", __func__, __LINE__);
 		ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
 					     SND_SOC_CLOCK_OUT);
+
+		pr_info("SLASH %s %d\n", __func__, __LINE__);
 		if (ret && ret != -ENOTSUPP)
 			goto err;
 	}
@@ -303,13 +314,15 @@ static int asoc_simple_init_dai(struct snd_soc_dai *dai,
 				     struct asoc_simple_dai *simple_dai)
 {
 	int ret;
-
+	pr_info("+++SLASH %s %d\n", __func__, __LINE__);
 	if (!simple_dai)
 		return 0;
 
 	if (simple_dai->sysclk) {
+		pr_info("SLASH %s %d\n", __func__, __LINE__);
 		ret = snd_soc_dai_set_sysclk(dai, 0, simple_dai->sysclk,
 					     simple_dai->clk_direction);
+		pr_info("SLASH %s %d\n", __func__, __LINE__);
 		if (ret && ret != -ENOTSUPP) {
 			dev_err(dai->dev, "simple-card: set_sysclk error\n");
 			return ret;
@@ -327,7 +340,7 @@ static int asoc_simple_init_dai(struct snd_soc_dai *dai,
 			return ret;
 		}
 	}
-
+	pr_info("---SLASH %s %d\n", __func__, __LINE__);
 	return 0;
 }
 

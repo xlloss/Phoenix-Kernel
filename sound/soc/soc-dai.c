@@ -53,14 +53,19 @@ int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
 			   unsigned int freq, int dir)
 {
 	int ret;
+	pr_info("+++SLASH %s %d\n", __func__, __LINE__);
 
 	if (dai->driver->ops &&
-	    dai->driver->ops->set_sysclk)
+	    dai->driver->ops->set_sysclk) {
+		pr_info("SLASH %s %d\n", __func__, __LINE__);
 		ret = dai->driver->ops->set_sysclk(dai, clk_id, freq, dir);
-	else
+	}
+	else {
+		pr_info("SLASH %s %d\n", __func__, __LINE__);
 		ret = snd_soc_component_set_sysclk(dai->component, clk_id, 0,
 						   freq, dir);
-
+	}
+	pr_info("---SLASH %s %d\n", __func__, __LINE__);
 	return soc_dai_ret(dai, ret);
 }
 EXPORT_SYMBOL_GPL(snd_soc_dai_set_sysclk);
