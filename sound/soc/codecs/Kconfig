@@ -739,7 +739,7 @@ config SND_SOC_DA7213
 	depends on I2C
 
 config SND_SOC_DA7218
-	tristate
+	tristate "Dialog DA7218 CODEC"
 	depends on I2C
 
 config SND_SOC_DA7219
