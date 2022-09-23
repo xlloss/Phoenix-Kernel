@@ -177,10 +177,10 @@
 	status = "okay";
 
 	versa3: versa3@68 {
-		status = "okay";
+		status = "disabled";
 		compatible = "renesas,5p35023";
 		reg = <0x68>;
-
+		#clock-cells = <1>;
 		clocks = <&x1_clk>;
 		clock-names = "x1";
 		assigned-clocks = <&versa3 0>,
