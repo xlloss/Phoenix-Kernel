@@ -43,8 +43,6 @@
 };
 
 &pinctrl {
-	/delete-node/ can0-stb;
-	/delete-node/ can1-stb;
 	scif1_pins: scif1 {
 		pinmux = <RZG2L_PORT_PINMUX(40, 0, 1)>,	/* TxD */
 			 <RZG2L_PORT_PINMUX(40, 1, 1)>;	/* RxD */
