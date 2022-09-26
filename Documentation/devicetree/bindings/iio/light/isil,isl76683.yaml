@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/iio/light/isil,isil76683.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: Intersil isl76683 ambient light sensor
+
+maintainers:
+  - Christoph Fritz <chf.fritz@googlemail.com>
+
+description: |
+  https://www.intersil.com/content/dam/Intersil/documents/isl7/isl76683.pdf
+
+properties:
+  compatible:
+    enum:
+      - isil,isl76683
+
+  reg:
+    maxItems: 1
+
+  interrupts:
+    maxItems: 1
+
+required:
+  - compatible
+  - reg
+  - interrupts
+
+additionalProperties: false
+
+examples:
+  - |
+    #include <dt-bindings/interrupt-controller/irq.h>
+
+    i2c {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        isl76683@74 {
+            compatible = "isil,isl76683";
+            reg = <0x74>;
+            interrupt-parent = <&gpio2>;
+            interrupts = <20 IRQ_TYPE_FALLING>;
+        };
+    };
