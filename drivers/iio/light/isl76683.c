@@ -502,10 +502,10 @@ static int isl76683_probe(struct i2c_client *client)
 	chip->trig->dev.parent = dev;
 	iio_trigger_set_drvdata(chip->trig, chip);
 
-	ret = devm_request_irq(dev, client->irq,
+	ret = devm_request_threaded_irq(dev, client->irq, NULL,
 			isl76683_interrupt_handler,
-			IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-			"isl76683_event", indio_dev);
+			IRQ_TYPE_EDGE_FALLING | IRQF_ONESHOT, "isl76683_event",
+			indio_dev);
 	if (ret) {
 		dev_err(dev, "irq request error\n");
 		return ret;
