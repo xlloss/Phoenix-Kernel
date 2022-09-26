@@ -931,7 +931,7 @@ static void rcar_canfd_error(struct net_device *ndev, u32 cerfl,
 	struct sk_buff *skb;
 	u32 ch = priv->channel;
 
-	netdev_dbg(ndev, "ch erfl %x txerr %u rxerr %u\n", cerfl, txerr, rxerr);
+	pr_info( "ch erfl %x txerr %u rxerr %u\n", cerfl, txerr, rxerr);
 
 	/* Propagate the error condition to the CAN stack */
 	skb = alloc_can_err_skb(ndev, &cf);
@@ -942,60 +942,60 @@ static void rcar_canfd_error(struct net_device *ndev, u32 cerfl,
 
 	/* Channel error interrupts */
 	if (cerfl & RCANFD_CERFL_BEF) {
-		netdev_dbg(ndev, "Bus error\n");
+		pr_info( "Bus error\n");
 		cf->can_id |= CAN_ERR_BUSERROR | CAN_ERR_PROT;
 		cf->data[2] = CAN_ERR_PROT_UNSPEC;
 		priv->can.can_stats.bus_error++;
 	}
 	if (cerfl & RCANFD_CERFL_ADERR) {
-		netdev_dbg(ndev, "ACK Delimiter Error\n");
+		pr_info( "ACK Delimiter Error\n");
 		stats->tx_errors++;
 		cf->data[3] |= CAN_ERR_PROT_LOC_ACK_DEL;
 	}
 	if (cerfl & RCANFD_CERFL_B0ERR) {
-		netdev_dbg(ndev, "Bit Error (dominant)\n");
+		pr_info( "Bit Error (dominant)\n");
 		stats->tx_errors++;
 		cf->data[2] |= CAN_ERR_PROT_BIT0;
 	}
 	if (cerfl & RCANFD_CERFL_B1ERR) {
-		netdev_dbg(ndev, "Bit Error (recessive)\n");
+		pr_info( "Bit Error (recessive)\n");
 		stats->tx_errors++;
 		cf->data[2] |= CAN_ERR_PROT_BIT1;
 	}
 	if (cerfl & RCANFD_CERFL_CERR) {
-		netdev_dbg(ndev, "CRC Error\n");
+		pr_info( "CRC Error\n");
 		stats->rx_errors++;
 		cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
 	}
 	if (cerfl & RCANFD_CERFL_AERR) {
-		netdev_dbg(ndev, "ACK Error\n");
+		pr_info( "ACK Error\n");
 		stats->tx_errors++;
 		cf->can_id |= CAN_ERR_ACK;
 		cf->data[3] |= CAN_ERR_PROT_LOC_ACK;
 	}
 	if (cerfl & RCANFD_CERFL_FERR) {
-		netdev_dbg(ndev, "Form Error\n");
+		pr_info( "Form Error\n");
 		stats->rx_errors++;
 		cf->data[2] |= CAN_ERR_PROT_FORM;
 	}
 	if (cerfl & RCANFD_CERFL_SERR) {
-		netdev_dbg(ndev, "Stuff Error\n");
+		pr_info( "Stuff Error\n");
 		stats->rx_errors++;
 		cf->data[2] |= CAN_ERR_PROT_STUFF;
 	}
 	if (cerfl & RCANFD_CERFL_ALF) {
-		netdev_dbg(ndev, "Arbitration lost Error\n");
+		pr_info( "Arbitration lost Error\n");
 		priv->can.can_stats.arbitration_lost++;
 		cf->can_id |= CAN_ERR_LOSTARB;
 		cf->data[0] |= CAN_ERR_LOSTARB_UNSPEC;
 	}
 	if (cerfl & RCANFD_CERFL_BLF) {
-		netdev_dbg(ndev, "Bus Lock Error\n");
+		pr_info( "Bus Lock Error\n");
 		stats->rx_errors++;
 		cf->can_id |= CAN_ERR_BUSERROR;
 	}
 	if (cerfl & RCANFD_CERFL_EWF) {
-		netdev_dbg(ndev, "Error warning interrupt\n");
+		pr_info( "Error warning interrupt\n");
 		priv->can.state = CAN_STATE_ERROR_WARNING;
 		priv->can.can_stats.error_warning++;
 		cf->can_id |= CAN_ERR_CRTL;
@@ -1005,7 +1005,7 @@ static void rcar_canfd_error(struct net_device *ndev, u32 cerfl,
 		cf->data[7] = rxerr;
 	}
 	if (cerfl & RCANFD_CERFL_EPF) {
-		netdev_dbg(ndev, "Error passive interrupt\n");
+		pr_info( "Error passive interrupt\n");
 		priv->can.state = CAN_STATE_ERROR_PASSIVE;
 		priv->can.can_stats.error_passive++;
 		cf->can_id |= CAN_ERR_CRTL;
@@ -1015,7 +1015,7 @@ static void rcar_canfd_error(struct net_device *ndev, u32 cerfl,
 		cf->data[7] = rxerr;
 	}
 	if (cerfl & RCANFD_CERFL_BOEF) {
-		netdev_dbg(ndev, "Bus-off entry interrupt\n");
+		pr_info( "Bus-off entry interrupt\n");
 		rcar_canfd_tx_failure_cleanup(ndev);
 		priv->can.state = CAN_STATE_BUS_OFF;
 		priv->can.can_stats.bus_off++;
@@ -1023,7 +1023,7 @@ static void rcar_canfd_error(struct net_device *ndev, u32 cerfl,
 		cf->can_id |= CAN_ERR_BUSOFF;
 	}
 	if (cerfl & RCANFD_CERFL_OVLF) {
-		netdev_dbg(ndev,
+		pr_info(
 			   "Overload Frame Transmission error interrupt\n");
 		stats->tx_errors++;
 		cf->can_id |= CAN_ERR_PROT;
@@ -1163,7 +1163,7 @@ static void rcar_canfd_state_change(struct net_device *ndev,
 		state = CAN_STATE_ERROR_WARNING;
 
 	if (state != priv->can.state) {
-		netdev_dbg(ndev, "state: new %d, old %d: txerr %u, rxerr %u\n",
+		pr_info( "state: new %d, old %d: txerr %u, rxerr %u\n",
 			   state, priv->can.state, txerr, rxerr);
 		skb = alloc_can_err_skb(ndev, &cf);
 		if (!skb) {
