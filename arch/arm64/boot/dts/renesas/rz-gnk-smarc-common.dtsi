@@ -176,6 +176,14 @@
 
 	status = "okay";
 
+	isl76683@44 {
+		status = "okay";
+		compatible = "isil,isl76683";
+		reg = <0x44>;
+		interrupt-parent = <&pinctrl>;
+		interrupts = <RZG2L_GPIO(2, 1) IRQ_TYPE_EDGE_FALLING>;
+	};
+
 	versa3: versa3@68 {
 		status = "disabled";
 		compatible = "renesas,5p35023";
