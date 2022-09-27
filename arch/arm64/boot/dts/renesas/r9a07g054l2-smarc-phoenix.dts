@@ -46,4 +46,26 @@
 		pinmux = <RZG2L_PORT_PINMUX(40, 0, 1)>,	/* TxD */
 			 <RZG2L_PORT_PINMUX(40, 1, 1)>;	/* RxD */
 	};
+
+	pmod0-gpio {
+		gpio-hog;
+		gpios = <RZG2L_GPIO(43, 0) GPIO_ACTIVE_HIGH>;
+		gpios = <RZG2L_GPIO(43, 2) GPIO_ACTIVE_HIGH>;
+		gpios = <RZG2L_GPIO(41, 0) GPIO_ACTIVE_HIGH>;
+		gpios = <RZG2L_GPIO(43, 1) GPIO_ACTIVE_HIGH>;
+		output-low;
+	};
+};
+
+/* PMOD 0 */
+&spi1 {
+	spidev0: spi@0 {
+		compatible = "spidev";
+		reg = <0>;
+		spi-max-frequency = <25000000>;
+	};
+};
+
+&gpt4 {
+	status = "disabled";
 };
