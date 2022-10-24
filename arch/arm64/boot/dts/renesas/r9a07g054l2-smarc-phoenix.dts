@@ -42,6 +42,10 @@
 };
 
 &pinctrl {
+	/* PMOD 1 */
+	/delete-node/ can0-stb;
+	/delete-node/ can1-stb;
+
 	scif1_pins: scif1 {
 		pinmux = <RZG2L_PORT_PINMUX(40, 0, 1)>,	/* TxD */
 			 <RZG2L_PORT_PINMUX(40, 1, 1)>;	/* RxD */
@@ -49,17 +53,27 @@
 
 	pmod0-gpio {
 		gpio-hog;
-		gpios = <RZG2L_GPIO(43, 0) GPIO_ACTIVE_HIGH>;
-		gpios = <RZG2L_GPIO(43, 2) GPIO_ACTIVE_HIGH>;
-		gpios = <RZG2L_GPIO(41, 0) GPIO_ACTIVE_HIGH>;
-		gpios = <RZG2L_GPIO(43, 1) GPIO_ACTIVE_HIGH>;
+		pinmux = <RZG2L_GPIO(43, 0) GPIO_ACTIVE_HIGH>,
+				 <RZG2L_GPIO(43, 2) GPIO_ACTIVE_HIGH>,
+				 <RZG2L_GPIO(41, 0) GPIO_ACTIVE_HIGH>,
+				 <RZG2L_GPIO(43, 1) GPIO_ACTIVE_HIGH>;
 		output-low;
 	};
+};
+
+/* PMOD1_SER0 */
+&scif2 {
+	pinctrl-0 = <&scif2_pins>;
+	pinctrl-names = "default";
+
+	uart-has-rtscts;
+	status = "okay";
 };
 
 /* PMOD 0 */
 &spi1 {
 	spidev0: spi@0 {
+		status = "disabled";
 		compatible = "spidev";
 		reg = <0>;
 		spi-max-frequency = <25000000>;
