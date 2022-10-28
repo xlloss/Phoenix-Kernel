@@ -767,10 +767,8 @@ static int rzg2l_mipi_dsi_parse_dt(struct rzg2l_mipi_dsi *mipi_dsi)
 	struct device_node *remote_input = NULL;
 	struct device_node *remote = NULL;
 	struct device_node *node;
-	struct property *prop;
 	bool is_bridge = false;
 	int ret = 0;
-	int len, num_lanes;
 
 	local_output = of_graph_get_endpoint_by_regs(mipi_dsi->dev->of_node,
 						     1, 0);
@@ -825,22 +823,6 @@ static int rzg2l_mipi_dsi_parse_dt(struct rzg2l_mipi_dsi *mipi_dsi)
 			goto done;
 		}
 	}
-
-	prop = of_find_property(local_output, "data-lanes", &len);
-	if (!prop) {
-		mipi_dsi->num_data_lanes = 4;
-		dev_dbg(mipi_dsi->dev, "Using default data lanes\n");
-		goto done;
-	}
-
-	num_lanes = len / sizeof(u32);
-	if (num_lanes < 1 || num_lanes > 4) {
-		dev_err(mipi_dsi->dev, "data lanes definition is not correct\n");
-		ret = -EINVAL;
-		goto done;
-	}
-
-	mipi_dsi->num_data_lanes = num_lanes;
 
 done:
 	of_node_put(local_output);
@@ -925,6 +907,8 @@ static int rzg2l_mipi_dsi_probe(struct platform_device *pdev)
 	struct device *dev = &pdev->dev;
 	struct rzg2l_mipi_dsi *mipi_dsi;
 	struct resource *mem;
+	struct property *prop;
+	int len, num_lanes;
 	int ret;
 
 	mipi_dsi = devm_kzalloc(&pdev->dev, sizeof(*mipi_dsi), GFP_KERNEL);
@@ -957,6 +941,22 @@ static int rzg2l_mipi_dsi_probe(struct platform_device *pdev)
 	if (ret < 0)
 		return ret;
 
+	prop = of_find_property(pdev->dev.of_node, "data-lanes", &len);
+	if (!prop) {
+		mipi_dsi->num_data_lanes = 4;
+		dev_info(mipi_dsi->dev, "Using default data lanes\n");
+		goto done;
+	}
+
+	num_lanes = len / sizeof(u32);
+	if (num_lanes < 1 || num_lanes > 4) {
+		dev_err(mipi_dsi->dev, "data lanes definition is not correct\n");
+		ret = -EINVAL;
+		goto done;
+	}
+
+	mipi_dsi->num_data_lanes = num_lanes;
+
 	/* Init host device */
 	mipi_dsi->host.dev = dev;
 	mipi_dsi->host.ops = &rzg2l_mipi_dsi_host_ops;
@@ -964,6 +964,7 @@ static int rzg2l_mipi_dsi_probe(struct platform_device *pdev)
 	if (ret < 0)
 		return ret;
 
+done:
 	drm_bridge_add(&mipi_dsi->bridge);
 
 	return 0;
