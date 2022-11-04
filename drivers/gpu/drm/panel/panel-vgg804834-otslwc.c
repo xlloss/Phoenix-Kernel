@@ -155,7 +155,7 @@ static int otslw_bl_get_brightness(struct backlight_device *bl)
 	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
 
 	bl->props.brightness =
-		gpiod_get_value_cansleep(otslw->bl_pwr) == 1 ? 255 : 0;
+		gpiod_get_value_cansleep(otslw->bl_pwr) == 1 ? 1 : 0;
 
 	return bl->props.brightness & 0xff;
 }
@@ -211,7 +211,7 @@ static int otslw_panel_probe(struct mipi_dsi_device *dsi)
 	struct device_node *np = dev->of_node;
 	struct otslw_panel *panel;
 	struct backlight_properties bl_props;
-	u32 video_mode;
+	u32 video_mode, def_enable;
 	int ret;
 
 	panel = devm_kzalloc(&dsi->dev, sizeof(*panel), GFP_KERNEL);
@@ -260,9 +260,9 @@ static int otslw_panel_probe(struct mipi_dsi_device *dsi)
 
 	memset(&bl_props, 0, sizeof(bl_props));
 	bl_props.type = BACKLIGHT_RAW;
-	bl_props.brightness = 0;
-	bl_props.max_brightness = 255;
-
+	bl_props.brightness = 1;
+	bl_props.max_brightness = 1;
+	bl_props.power = FB_BLANK_NORMAL;
 	panel->backlight = devm_backlight_device_register(dev, dev_name(dev),
 							  dev, dsi, &otslw_bl_ops,
 							  &bl_props);
@@ -285,6 +285,12 @@ static int otslw_panel_probe(struct mipi_dsi_device *dsi)
 	if (ret)
 		drm_panel_remove(&panel->panel);
 
+	ret = of_property_read_u32(np, "default-brightness", &def_enable);
+	if ((ret != 0))
+		dev_info(dev, "brightness default enable\n");
+
+	def_enable = def_enable ? 1 : 0;
+	backlight_device_set_brightness(panel->backlight, def_enable);
 	gpiod_set_value_cansleep(panel->reset, 1);
 	backlight_enable(panel->backlight);
 

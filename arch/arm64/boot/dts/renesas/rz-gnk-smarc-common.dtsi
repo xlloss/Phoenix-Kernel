@@ -415,6 +415,7 @@
 		v5p0-supply = <&reg_vcc_lcd>;
 		reset-gpios = <&pinctrl RZG2L_GPIO(46, 0) GPIO_ACTIVE_LOW>;
 		blpwr-gpios = <&pinctrl RZG2L_GPIO(48, 2) GPIO_ACTIVE_HIGH>;
+		default-brightness = <1>;
 		dsi-lanes = <2>;
 
 		#address-cells = <1>;
