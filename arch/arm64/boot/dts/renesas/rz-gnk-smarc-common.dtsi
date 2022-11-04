@@ -177,7 +177,7 @@
 	status = "okay";
 
 	isl76683@44 {
-		status = "okay";
+		status = "disabled";
 		compatible = "isil,isl76683";
 		reg = <0x44>;
 		interrupt-parent = <&pinctrl>;
