@@ -72,3 +72,7 @@
 &gpt4 {
 	status = "disabled";
 };
+
+&dsi0 {
+	status = "okay";
+};
