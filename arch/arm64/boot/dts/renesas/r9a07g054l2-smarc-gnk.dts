@@ -62,6 +62,7 @@
 
 /* PMOD 0 */
 &spi1 {
+	status = "disabled";
 	spidev0: spi@0 {
 		compatible = "spidev";
 		reg = <0>;
