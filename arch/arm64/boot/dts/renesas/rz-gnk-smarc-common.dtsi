@@ -275,9 +275,7 @@
 };
 
 &scif1 {
-	pinctrl-0 = <&scif1_pins>;
-	pinctrl-names = "default";
-	status = "okay";
+	status = "disabled";
 };
 
 &scif2 {
@@ -286,6 +284,10 @@
 
 	uart-has-rtscts;
 	status = "okay";
+};
+
+&scif3 {
+	status = "disabled";
 };
 
 &sdhi1 {
@@ -499,24 +501,6 @@
 	};
 };
 
-&pinctrl {
-	/delete-node/ can0-stb;
-	/delete-node/ can1-stb;
-	scif1_pins: scif1 {
-		pinmux = <RZG2L_PORT_PINMUX(40, 0, 1)>,	/* TxD */
-			 <RZG2L_PORT_PINMUX(40, 1, 1)>;	/* RxD */
-	};
-
-	pmod0-gpio {
-		gpio-hog;
-		pinmux = <RZG2L_GPIO(43, 0) GPIO_ACTIVE_HIGH>,
-			<RZG2L_GPIO(43, 2) GPIO_ACTIVE_HIGH>,
-			<RZG2L_GPIO(41, 0) GPIO_ACTIVE_HIGH>,
-			<RZG2L_GPIO(43, 1) GPIO_ACTIVE_HIGH>;
-		output-low;
-	};
-};
-
 /* PMOD 0 */
 &spi1 {
 	status = "disabled";
@@ -525,12 +509,4 @@
 		reg = <0>;
 		spi-max-frequency = <25000000>;
 	};
-};
-
-&gpt4 {
-	status = "disabled";
-};
-
-&dsi0 {
-	status = "okay";
 };
