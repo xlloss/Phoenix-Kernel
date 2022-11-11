@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 /*
- * Device Tree Source for the RZ/G2L SMARC PHOENIX board
+ * Device Tree Source for the RZ/G2L SMARC GNK board
  *
- * Copyright (C) 2022 Regulus Corp.
+ * slash.huang@regulus.com.tw
+ * slash.linux.c@gmail.com
  */
 
 /dts-v1/;
@@ -51,6 +52,11 @@
 			<RZG2L_GPIO(43, 1) GPIO_ACTIVE_HIGH>;
 		output-low;
 	};
+
+	gpt3_pins: gpt3 {
+		/* Channel A */
+		pinmux = <RZG2L_PORT_PINMUX(3, 0, 3)>;
+	};
 };
 
 &gpt4 {
@@ -58,6 +64,14 @@
 };
 
 &dsi0 {
+	status = "okay";
+};
+
+&panel {
+	status = "okay";
+};
+
+&pwm_backlight {
 	status = "okay";
 };
 
@@ -71,4 +85,11 @@
 
 &ov5645 {
 	status = "okay";
+};
+
+&gpt3 {
+	pinctrl-0 = <&gpt3_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+	channel = "channel_A";
 };
