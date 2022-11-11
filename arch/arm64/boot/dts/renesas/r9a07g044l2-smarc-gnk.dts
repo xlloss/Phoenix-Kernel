@@ -60,3 +60,15 @@
 &dsi0 {
 	status = "okay";
 };
+
+&csi2 {
+	status = "okay";
+};
+
+&i2c0 {
+	status = "okay";
+};
+
+&ov5645 {
+	status = "okay";
+};
